@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/j1204fernandes-crypto/AtividadeFINALPPI#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "session": "^0.1.0"
   }
 }
