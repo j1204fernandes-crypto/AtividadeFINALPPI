@@ -29,7 +29,7 @@ server.get("/", verificarUsuarioLogado, (requisicao, resposta) => {
     let ultimoAcesso = requisicao.cookies?.ultimoAcesso;
 
     if (usuarioLogado){
-        resposta.redirect("/cadastroUsuario");
+        resposta.redirect("/cadastroEquipes");
     }
 
     const data = new Date();
