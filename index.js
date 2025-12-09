@@ -4,7 +4,8 @@ import session from "express-session";
 
 const host = "0.0.0.0";
 const porta = 3000;
-var listaUsuarios = [];
+var listaEquipes = [];
+var listaJogadores = [];
 
 var usuarioLogado = false; 
 
@@ -54,10 +55,10 @@ server.get("/", verificarUsuarioLogado, (requisicao, resposta) => {
 
                     <form action="">
                         <div class="mb-3 text-center">
-                            <button class="btn btn-primary w-50" id="btn_equipe">Cadastro de equipe</button>
+                            <button class="btn btn-primary w-50" id="btn_equipe" href="/cadastroEquipes>Cadastro de equipe</button>
                         </div>
                         <div class="mb-3 text-center">
-                            <button class="btn btn-primary w-50" id="btn_jogador">Cadastro de jogadores</button>
+                            <button class="btn btn-primary w-50" id="btn_jogador" href="/cadastroJogadores>Cadastro de jogadores</button>
                         </div>
                         <div class="mb-3 text-center">
                             <button class="btn btn-secondary w-50" aria-current="page" href="/logout">Logout</button>
@@ -234,7 +235,7 @@ server.get("/listarEquipes", verificarUsuarioLogado,(requisicao, resposta) => {
     conteudo+=`
                          </tbody>
                       </table>
-                      <a class="btn btn-secondary" href="/cadastroUsuario">Voltar</a>
+                      <a class="btn btn-secondary" href="/">Voltar</a>
                   </div>
                 </div> 
             </body>
@@ -244,7 +245,308 @@ server.get("/listarEquipes", verificarUsuarioLogado,(requisicao, resposta) => {
     resposta.send(conteudo);
 });
 
+server.get("/cadastroJogadores", verificarUsuarioLogado,(requisicao,resposta) => {
+    let conteudo = `
+        <DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+                <title>Menu do Sistema</title>
+            </head>
+            <body class="bg-dark">
+                <div class="d-flex justify-content-center align-items-center vh-100">
+                    <div class="container">
+                        <h1 class="text-center border m-3 p-3 bg-light">Cadastro de Jogadores</h1>
+                        <form method="POST" action="/adicionarUsuario" class="row g-3 m-3 p-3 bg-light">
+                                <div class="col-md-4">
+                                    <label for="nome_jog" class="form-label">Nome do jogador</label>
+                                    <input type="text" class="form-control" id="nome_jog" name="nome_jog">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="nick" class="form-label">Nickname</label>
+                                    <input type="text" class="form-control" id="nick" name="nick">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="func" class="form-label">função</label>
+                                    <select class="form-select" id="func" name="func">
+                                        <option selected disabled value="">Qual a função do jogador?</option>
+                                        <option value="AC">Toplaner</option>
+                                        <option value="AL">Jungler</option>
+                                        <option value="AP">Midlaner</option>
+                                        <option value="AM">Atirador</option>
+                                        <option value="BA">Suporte</option>
+                                    </select>
+                                    
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="elo" class="form-label">elo</label>
+                                    <select class="form-select" id="elo" name="elo">
+                                        <option selected disabled value="">Qual o seu Elo?</option>
+                                        <option value="">Sem elo</option>
+                                        <option value="">Ferro</option>
+                                        <option value="">Bronze</option>
+                                        <option value="">Prata</option>
+                                        <option value="">Ouro</option>
+                                        <option value="">Esmeralda</option>
+                                        <option value="">Platina</option>
+                                        <option value="">Diamante</option>
+                                        <option value="">Mestre</option>
+                                        <option value="">Grão-Mestre</option>
+                                        <option value="">Chalenger</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="equipe" class="form-label">Equipe</label>
+                                    <select class="form-select" id="equipe" name="equipe">
+                                        <option selected disabled value="">Qual a sua equipe</option>`;
+                            for(let i=0;i<listaEquipes.length;i++){
+                                conteudo += `
+                                    <option>${listaEquipes[i].nome}</option>
+                                `;
+                            }
 
+                        conteudo += `    
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="sexo" class="form-label">Genero</label>
+                                    <input type="text" class="form-control" id="sexo" name="sexo">
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-primary" type="submit">Cadastrar</button>
+                                    <a class="btn btn-secondary" href="/">Voltar</a>
+                                </div>
+                        </form> <br><br><br><br><br><br><br><br>
+                    </div>
+                </div> 
+            </body>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        </html>
+
+    `
+    resposta.send(conteudo);
+})
+
+server.post('/adicionarJogadores', verificarUsuarioLogado, (requisicao, resposta) => {
+    const nome_jog = requisicao.body.nome_jog;
+    const nick = requisicao.body.nick;
+    const func = requisicao.body.func;
+    const elo = requisicao.body.elo;
+    const sexo = requisicao.body.sexo;
+    const equipe = requisicao.body.equipe;
+    var valido = true;
+
+    for(let i=0;i<listaJogadores.length;i++){
+        if(equipe == listaJogadores[i].equipe && func == listaJogadores[i].func){
+                valido = false;
+        }
+    }
+
+    if (nome_jog && nick && func && elo && equipe && sexo && valido){
+
+        listaJogadores.push({nome_jog, nick, func, elo, equipe, sexo});
+        resposta.redirect("/listarJogadores");
+    }
+    else{
+
+        let conteudo = `     
+        <DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+                <title>Menu do Sistema</title>
+            </head>
+            <body class="bg-dark">
+                <div class="d-flex justify-content-center align-items-center vh-100">
+                    <div class="container">
+                        <h1 class="text-center border m-3 p-3 bg-light">Cadastro de Jogadores</h1>
+                        <form method="POST" action="/adicionarUsuario" class="row g-3 m-3 p-3 bg-light">
+                                <div class="col-md-4">
+                                    <label for="nome_jog" class="form-label">Nome do jogador</label>
+                                    <input type="text" class="form-control" id="nome_jog" name="nome_jog" value="${nome_jog}">
+                            `;
+        if (!nome_jog){
+            conteudo += `
+            <div>
+                <p class="text-danger">Por favor, informe o nome do Jogador</p>
+            </div>
+        `
+        }
+
+        conteudo += `</div>
+                            <div class="col-md-4">
+                                    <label for="nick" class="form-label">Nickname</label>
+                                    <input type="text" class="form-control" id="nick" name="nick" value="${nick}">
+                            `
+        if (!nick){
+        
+        conteudo += `
+            <div>
+                <p class="text-danger">Por favor, informe o Nickname</p>
+            </div>
+        `;
+        }
+
+        conteudo+= `</div>
+                           <div class="col-md-4">
+                                    <label for="func" class="form-label">função</label>
+                                    <select class="form-select" id="func" name="func" value="${func}">
+                                        <option selected disabled value="">Qual a função do jogador?</option>
+                                        <option value="AC">Toplaner</option>
+                                        <option value="AL">Jungler</option>
+                                        <option value="AP">Midlaner</option>
+                                        <option value="AM">Atirador</option>
+                                        <option value="BA">Suporte</option>
+                                    </select>
+                            `;
+        if (!func){
+
+            conteudo += `
+                <div>
+                    <p class="text-danger">Por favor, informe a função do jogador</p>
+                </div>
+            `;
+        }
+
+        if (!valido) {
+            conteudo += `
+                <div>
+                    <p class="text-danger">Esta função já foi escolhida por outro jogador da equipe.</p>
+                </div>`;
+        }
+
+        conteudo += `</div>
+                             <div class="col-md-6">
+                                    <label for="elo" class="form-label">elo</label>
+                                    <select class="form-select" id="elo" name="elo" value="${elo}">
+                                     <option selected disabled value="">Qual o seu Elo?</option>
+                                        <option value="">Sem elo</option>
+                                        <option value="">Ferro</option>
+                                        <option value="">Bronze</option>
+                                        <option value="">Prata</option>
+                                        <option value="">Ouro</option>
+                                        <option value="">Esmeralda</option>
+                                        <option value="">Platina</option>
+                                        <option value="">Diamante</option>
+                                        <option value="">Mestre</option>
+                                        <option value="">Grão-Mestre</option>
+                                        <option value="">Chalenger</option>
+                                    </select>
+                            `;
+
+        if (!elo){
+            conteudo += `
+            <div>
+                <p class="text-danger">Por favor, informe o Elo</p>
+            </div>`
+        }
+
+        conteudo += `</div>
+                            <div class="col-md-3">
+                                    <label for="equipe" class="form-label">Equipe</label>
+                                    <select class="form-select" id="equipe" name="equipe" value="${equipe}">
+                            `;
+                         for(let i=0;i<listaEquipes.length;i++){
+                                conteudo += `
+                                    <option>${listaEquipes[i].nome}</option>
+                                `;
+                            }
+
+                        conteudo += `    
+                                    </select>`;
+        if (!equipe){
+            conteudo += `
+            <div>
+                <p class="text-danger">Por favor, informe a Equipe</p>
+            </div>`
+        }
+
+        conteudo += `</div>
+                            <div class="col-md-3">
+                                    <label for="sexo" class="form-label">Genero</label>
+                                    <input type="text" class="form-control" id="sexo" name="sexo" value="${sexo}">
+                              
+                             `;
+        if (!sexo){
+            conteudo += `
+            <div>
+                <p class="text-danger">Por favor, informe o genero do jogador</p>
+            </div>`
+        }
+
+        conteudo += `</div>
+                            <div class="col-12">
+                                    <button class="btn btn-primary" type="submit">Cadastrar</button>
+                                    <a class="btn btn-secondary" href="/">Voltar</a>
+                                </div>
+                        </form> <br><br><br><br><br><br><br><br>
+                    </div>
+                </div> 
+            </body>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        </html>
+        
+        `;
+
+        resposta.send(conteudo);
+
+    }
+
+    });
+
+server.get("/listarJogadores", verificarUsuarioLogado,(requisicao, resposta) => {
+    let conteudo = `
+       <DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+                <title>Lista de Jogadores</title>
+            </head>
+            <body class="bg-dark">
+                    <div class="container bg-light">
+                        <h1 class="text-center border m-3 p-3 bg-light">Lista de Jogadores</h1>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Equipes</th>
+                                    <th>Nome</th>
+                                    <th>Nickname</th>
+                                    <th>Função</th>
+                                    <th>Elo</th>
+                                    <th>genero</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+    for (let i = 0; i < listaEquipes.length; i++) {
+       for(let j = 0;j<listaJogadores.length;j++){
+            if(listaEquipes[i].nome == listaJogadores[j].equipe){
+                conteudo += `
+                    <tr>
+                        <td>${listaJogadores[j].equipe}</td>
+                        <td>${listaJogadores[j].nome_jog}</td>
+                        <td>${listaJogadores[j].nick}</td>
+                        <td>${listaJogadores[j].func}</td>
+                        <td>${listaJogadores[j].elo}</td>
+                        <td>${listaJogadores[j].sexo}</td>
+                    </tr>
+                `;
+            }
+        }
+    }
+    conteudo+=`
+                      </tbody>
+                        </table>
+                        <a class="btn btn-secondary" href="/">Voltar</a>
+                    </div>
+            </body>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        </html>
+    `;
+    resposta.send(conteudo);
+});
 
 server.get("/login", (requisicao, resposta) => {
     resposta.send(`
@@ -352,4 +654,3 @@ function verificarUsuarioLogado(requisicao, resposta, proximo) {
 server.listen(porta, host, () => {
     console.log(`Servidor rodando em http://${host}:${porta}`)
 });
-
