@@ -388,11 +388,11 @@ server.post('/adicionarJogadores', verificarUsuarioLogado, (requisicao, resposta
                                     <label for="func" class="form-label">função</label>
                                     <select class="form-select" id="func" name="func" value="${func}">
                                         <option selected disabled value="">Qual a função do jogador?</option>
-                                        <option value="AC">Toplaner</option>
-                                        <option value="AL">Jungler</option>
-                                        <option value="AP">Midlaner</option>
-                                        <option value="AM">Atirador</option>
-                                        <option value="BA">Suporte</option>
+                                        <option value="TopLaner">Toplaner</option>
+                                        <option value="Jungler">Jungler</option>
+                                        <option value="Midlaner">Midlaner</option>
+                                        <option value="Atirador">Atirador</option>
+                                        <option value="Suporte">Suporte</option>
                                     </select>
                             `;
         if (!func){
@@ -416,17 +416,17 @@ server.post('/adicionarJogadores', verificarUsuarioLogado, (requisicao, resposta
                                     <label for="elo" class="form-label">elo</label>
                                     <select class="form-select" id="elo" name="elo" value="${elo}">
                                      <option selected disabled value="">Qual o seu Elo?</option>
-                                        <option value="">Sem elo</option>
-                                        <option value="">Ferro</option>
-                                        <option value="">Bronze</option>
-                                        <option value="">Prata</option>
-                                        <option value="">Ouro</option>
-                                        <option value="">Esmeralda</option>
-                                        <option value="">Platina</option>
-                                        <option value="">Diamante</option>
-                                        <option value="">Mestre</option>
-                                        <option value="">Grão-Mestre</option>
-                                        <option value="">Chalenger</option>
+                                        <option value="Sem elo">Sem elo</option>
+                                        <option value="Ferro">Ferro</option>
+                                        <option value="Bronze">Bronze</option>
+                                        <option value="Prata">Prata</option>
+                                        <option value="Ouro">Ouro</option>
+                                        <option value="Esmeralda">Esmeralda</option>
+                                        <option value="Platina">Platina</option>
+                                        <option value="Diamante">Diamante</option>
+                                        <option value="Mestre">Mestre</option>
+                                        <option value="Grão-Mestre">Grão-Mestre</option>
+                                        <option value="Chalenger">Chalenger</option>
                                     </select>
                             `;
 
@@ -444,7 +444,7 @@ server.post('/adicionarJogadores', verificarUsuarioLogado, (requisicao, resposta
                             `;
                          for(let i=0;i<listaEquipes.length;i++){
                                 conteudo += `
-                                    <option>${listaEquipes[i].nome}</option>
+                                    <option value="${listaEquipes[i].nome}">${listaEquipes[i].nome}</option>
                                 `;
                             }
 
