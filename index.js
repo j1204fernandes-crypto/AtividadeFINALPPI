@@ -7,8 +7,6 @@ const porta = 3000;
 var listaEquipes = [];
 var listaJogadores = [];
 
-var usuarioLogado = false; 
-
 const server = express();
 
 server.use(session({
@@ -27,10 +25,6 @@ server.use(cookieParser());
 server.get("/", verificarUsuarioLogado, (requisicao, resposta) => {
 
     let ultimoAcesso = requisicao.cookies?.ultimoAcesso;
-
-    if (usuarioLogado){
-        resposta.redirect("/cadastroEquipes");
-    }
 
     const data = new Date();
     resposta.cookie("ultimoAcesso",data.toLocaleString());
@@ -55,13 +49,13 @@ server.get("/", verificarUsuarioLogado, (requisicao, resposta) => {
 
                     <form action="">
                         <div class="mb-3 text-center">
-                            <button class="btn btn-primary w-50" id="btn_equipe" href="/cadastroEquipes>Cadastro de equipe</button>
+                            <a class="btn btn-primary w-50" id="btn_equipe" href="/cadastroEquipes">Cadastro de equipe</a>
                         </div>
                         <div class="mb-3 text-center">
-                            <button class="btn btn-primary w-50" id="btn_jogador" href="/cadastroJogadores>Cadastro de jogadores</button>
+                            <a class="btn btn-primary w-50" id="btn_jogador" href="/cadastroJogadores">Cadastro de jogadores</a>
                         </div>
                         <div class="mb-3 text-center">
-                            <button class="btn btn-secondary w-50" aria-current="page" href="/logout">Logout</button>
+                            <a class="btn btn-secondary w-50" aria-current="page" href="/logout">Logout</a>
                         </div>
                     </form>
 
@@ -89,7 +83,7 @@ server.get("/cadastroEquipes", verificarUsuarioLogado,(requisicao,resposta) => {
               <div class="d-flex justify-content-center align-items-center vh-100 ">
                 <div class="container">
                     <h1 class="text-center border m-3 p-3 bg-light">Cadastro de Equipes</h1>
-                    <form method="POST" action="/adicionarUsuario" class="row g-3 m-3 p-3 bg-light">
+                    <form method="POST" action="/adicionarEquipes" class="row g-3 m-3 p-3 bg-light">
                             <div class="col-md-4">
                                 <label for="nome" class="form-label">Nome da equipe</label>
                                 <input type="text" class="form-control" id="nome" name="nome">
@@ -140,7 +134,7 @@ server.post('/adicionarEquipes', verificarUsuarioLogado, (requisicao, resposta) 
               <div class="d-flex justify-content-center align-items-center vh-100 ">
                 <div class="container">
                     <h1 class="text-center border m-3 p-3 bg-light">Cadastro de Equipes</h1>
-                    <form method="POST" action="/adicionarUsuario" class="row g-3 m-3 p-3 bg-light">
+                    <form method="POST" action="/adicionarEquipes" class="row g-3 m-3 p-3 bg-light">
                             <div class="col-md-4">
                                 <label for="nome" class="form-label">Nome da equipe</label>
                                 <input type="text" class="form-control" id="nome" name="nome" value="${nome}">
@@ -228,7 +222,7 @@ server.get("/listarEquipes", verificarUsuarioLogado,(requisicao, resposta) => {
             <tr>
                 <td>${listaEquipes[i].nome}</td>
                 <td>${listaEquipes[i].capitao}</td>
-                <td>${listaEquipes[i].tel}</td
+                <td>${listaEquipes[i].tel}</td>
             </tr>
         `;
     }
@@ -258,7 +252,7 @@ server.get("/cadastroJogadores", verificarUsuarioLogado,(requisicao,resposta) =>
                 <div class="d-flex justify-content-center align-items-center vh-100">
                     <div class="container">
                         <h1 class="text-center border m-3 p-3 bg-light">Cadastro de Jogadores</h1>
-                        <form method="POST" action="/adicionarUsuario" class="row g-3 m-3 p-3 bg-light">
+                        <form method="POST" action="/adicionarJogadores" class="row g-3 m-3 p-3 bg-light">
                                 <div class="col-md-4">
                                     <label for="nome_jog" class="form-label">Nome do jogador</label>
                                     <input type="text" class="form-control" id="nome_jog" name="nome_jog">
@@ -362,7 +356,7 @@ server.post('/adicionarJogadores', verificarUsuarioLogado, (requisicao, resposta
                 <div class="d-flex justify-content-center align-items-center vh-100">
                     <div class="container">
                         <h1 class="text-center border m-3 p-3 bg-light">Cadastro de Jogadores</h1>
-                        <form method="POST" action="/adicionarUsuario" class="row g-3 m-3 p-3 bg-light">
+                        <form method="POST" action="/adicionarJogadores" class="row g-3 m-3 p-3 bg-light">
                                 <div class="col-md-4">
                                     <label for="nome_jog" class="form-label">Nome do jogador</label>
                                     <input type="text" class="form-control" id="nome_jog" name="nome_jog" value="${nome_jog}">
@@ -567,12 +561,12 @@ server.get("/login", (requisicao, resposta) => {
                     <form action='/login' method='POST' class="row g-3 needs-validation" novalidate>
                         <div class="mb-3">
                             <label class="form-label">Usuário</label>
-                            <input type="text" class="form-control" id="Login" placeholder="Digite seu usuário">
+                            <input type="text" class="form-control" id="Login" name="usuario" placeholder="Digite seu usuário">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Senha</label>
-                            <input type="password" class="form-control" id="Senha" placeholder="Digite sua senha">
+                            <input type="password" class="form-control" id="Senha" name="senha" placeholder="Digite sua senha">
                         </div>
 
                         <button class="btn btn-primary w-100" type="submit">Entrar</button>
@@ -613,12 +607,12 @@ server.post("/login", (requisicao, resposta) => {
                     <form action='/login' method='POST' class="row g-3 needs-validation" novalidate>
                         <div class="mb-3">
                             <label class="form-label">Usuário</label>
-                            <input type="text" class="form-control" id="Login" placeholder="Digite seu usuário">
+                            <input type="text" class="form-control" id="Login" name="usuario" placeholder="Digite seu usuário">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Senha</label>
-                            <input type="password" class="form-control" id="Senha" placeholder="Digite sua senha">
+                            <input type="password" class="form-control" id="Senha" name="senha" placeholder="Digite sua senha">
                         </div>
 
                         <button class="btn btn-primary w-100" type="submit">Entrar</button>
